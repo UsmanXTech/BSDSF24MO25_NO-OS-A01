@@ -1,18 +1,18 @@
-# REPORT.md
-
 # Operating Systems Programming Assignment 01
 
 ## Student Information
 
 - Roll Number: BSDSF24MO25
 
-## Project Status
-
-This report will be completed throughout the assignment. Each section will document the implementation, build process, testing, analysis, and Git workflow for the corresponding feature.
-
 ## Part 1 — Project Scaffolding & Version Control
 
+### Repository
+
+Repository: `BSDSF24MO25_NO-OS-A01`
+
 ### Project Structure
+
+The project follows the required structure:
 
 ```text
 BSDSF24MO25_NO-OS-A01/
@@ -24,4 +24,12 @@ BSDSF24MO25_NO-OS-A01/
 └── REPORT.md
 ```
 
-The remaining sections will be added as the assignment progresses.
+### Work Completed
+
+- Created the project repository.
+- Added the required project directories.
+- Added the initial project documentation.
+
+### Notes
+
+The report will be extended after each feature is completed.
