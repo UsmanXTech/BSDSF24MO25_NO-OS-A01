@@ -21,6 +21,7 @@ BSDSF24MO25_NO-OS-A01/
 ├── lib/
 ├── bin/
 ├── obj/
+├── Makefile
 └── REPORT.md
 ```
 
@@ -29,7 +30,58 @@ BSDSF24MO25_NO-OS-A01/
 - Created the project repository.
 - Added the required project directories.
 - Added the initial project documentation.
+- Established incremental Git development.
 
-### Notes
+## Part 2 — Multi-file Project
 
-The report will be extended after each feature is completed.
+### Source Files
+
+The multi-file implementation contains:
+
+- `src/main.c`
+- `src/mystrfunctions.c`
+- `src/myfilefunctions.c`
+
+### Header Files
+
+The interfaces are separated into:
+
+- `include/mystrfunctions.h`
+- `include/myfilefunctions.h`
+
+### String Utilities
+
+The string module implements:
+
+- `mystrlen()`
+- `mystrcpy()`
+- `mystrncpy()`
+- `mystrcat()`
+
+### File Utilities
+
+The file module implements:
+
+- `wordCount()`
+- `mygrep()`
+
+### Build System
+
+A top-level `Makefile` recursively invokes the Makefile in `src/`. The source Makefile compiles the individual source files into object files under `obj/` and links them into:
+
+```text
+bin/client
+```
+
+The build uses GCC with warnings enabled and the `include/` directory supplied as a header search path.
+
+### Build Commands
+
+```bash
+make
+make clean
+```
+
+### Day 2 Result
+
+The multi-file project structure and build system have been added on the `multifile-build` branch. The next stage is the static library build.

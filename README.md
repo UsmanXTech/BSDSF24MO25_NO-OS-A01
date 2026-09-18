@@ -10,11 +10,12 @@ This repository contains the work for Operating Systems Programming Assignment 0
 
 ```text
 BSDSF24MO25_NO-OS-A01/
-├── src/        # Source code for the library and application
+├── src/        # C source files and build rules
 ├── include/    # Header files
 ├── lib/        # Compiled static and dynamic libraries
 ├── bin/        # Final executable programs
 ├── obj/        # Intermediate object files
+├── Makefile    # Top-level build entry point
 └── REPORT.md   # Assignment report
 ```
 
@@ -30,9 +31,25 @@ BSDSF24MO25_NO-OS-A01/
 
 | Part | Status |
 | --- | --- |
-| Project Scaffolding & Version Control | In progress |
-| Multi-file Project | Pending |
+| Project Scaffolding & Version Control | Complete |
+| Multi-file Project | Complete |
 | Static Library | Pending |
 | Dynamic Library | Pending |
 | Man Pages & Installation | Pending |
 | Final Submission | Pending |
+
+## Building
+
+Run:
+
+```bash
+make
+```
+
+The multi-file build produces `bin/client`.
+
+To remove generated object files and the executable:
+
+```bash
+make clean
+```
