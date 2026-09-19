@@ -2,17 +2,25 @@ CC = gcc
 CFLAGS = -Wall -Wextra -std=c11 -I../include
 OBJDIR = ../obj
 BINDIR = ../bin
+LIBDIR = ../lib
 
-OBJS = $(OBJDIR)/main.o $(OBJDIR)/mystrfunctions.o $(OBJDIR)/myfilefunctions.o
-TARGET = $(BINDIR)/client
+LIB_OBJS = $(OBJDIR)/mystrfunctions.o $(OBJDIR)/myfilefunctions.o
+MAIN_OBJ = $(OBJDIR)/main.o
+LIBRARY = $(LIBDIR)/libmyutils.a
+TARGET = $(BINDIR)/client_static
 
 .PHONY: all clean
 
 all: $(TARGET)
 
-$(TARGET): $(OBJS)
+$(LIBRARY): $(LIB_OBJS)
+	mkdir -p $(LIBDIR)
+	ar rcs $(LIBRARY) $(LIB_OBJS)
+	ranlib $(LIBRARY)
+
+$(TARGET): $(MAIN_OBJ) $(LIBRARY)
 	mkdir -p $(BINDIR)
-	$(CC) $(OBJS) -o $(TARGET)
+	$(CC) $(MAIN_OBJ) -L$(LIBDIR) -lmyutils -o $(TARGET)
 
 $(OBJDIR)/main.o: main.c ../include/mystrfunctions.h ../include/myfilefunctions.h
 	mkdir -p $(OBJDIR)
@@ -27,4 +35,4 @@ $(OBJDIR)/myfilefunctions.o: myfilefunctions.c ../include/myfilefunctions.h
 	$(CC) $(CFLAGS) -c myfilefunctions.c -o $@
 
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -f $(LIB_OBJS) $(MAIN_OBJ) $(LIBRARY) $(TARGET)
