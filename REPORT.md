@@ -126,6 +126,75 @@ readelf -Ws bin/client_static
 
 `ar -t` lists the object files stored in the archive. `nm` displays symbols from the static library. `readelf -Ws` displays the symbol table of the final executable.
 
+### Report Questions
+
+#### 1. Compare the Makefile from Part 2 and Part 3. What are the key differences in the variables and rules that enable the creation of a static library?
+
+In Part 2, the Makefile compiled the source files into object files and linked all object files directly to create `bin/client`.
+
+In Part 3, the Makefile introduces a library directory and separate library targets:
+
+- `LIBDIR = ../lib`
+- `LIB_OBJS = $(OBJDIR)/mystrfunctions.o $(OBJDIR)/myfilefunctions.o`
+- `LIBRARY = $(LIBDIR)/libmyutils.a`
+- `TARGET = $(BINDIR)/client_static`
+
+A new library rule uses `ar rcs` to create `lib/libmyutils.a` from the utility object files, followed by `ranlib` to create or update the archive index. The client target then links `main.o` against the library using `-L$(LIBDIR) -lmyutils`. This separates the utility functions into a reusable static library instead of linking their object files directly into the client command.
+
+#### 2. What is the purpose of the ar command? Why is ranlib often used immediately after it?
+
+The `ar` utility creates and manages archive files. In this project, `ar rcs` creates `lib/libmyutils.a` and stores the utility object files `mystrfunctions.o` and `myfilefunctions.o` inside it.
+
+`ranlib` generates or updates the archive symbol index. The index allows the linker to locate required symbols in the archive efficiently. Modern versions of `ar rcs` commonly create the index automatically, but running `ranlib` explicitly is still useful for clarity and compatibility with traditional static-library workflows.
+
+#### 3. When you run nm on your client_static executable, are the symbols for functions like mystrlen present?
+
+Yes. The verified `nm bin/client_static` output contains the required utility symbols:
+
+```text
+00000000000016a8 T mystrlen
+00000000000016e6 T mystrcpy
+0000000000001760 T mystrncpy
+00000000000017fb T mystrcat
+000000000000189f T wordCount
+00000000000019ab T mygrep
+```
+
+The `T` symbol type indicates that these functions are present in the executable's text/code section. The `readelf -Ws bin/client_static` output also confirmed these functions as global function symbols.
+
+### Day 3 Verification
+
+The static build was compiled successfully with `make` and the resulting `bin/client_static` executed successfully.
+
+Verified output included:
+
+```text
+String: Day 2: Operating Systems
+Length: 24
+Copied: Multi-file C
+Lines: 3
+Words: 9
+Characters: 65
+Matches: 1
+Static library comes next
+```
+
+The generated files were:
+
+```text
+bin/client_static  17K
+lib/libmyutils.a   5.5K
+```
+
+The archive inspection showed:
+
+```text
+mystrfunctions.o
+myfilefunctions.o
+```
+
+The required utility symbols were also confirmed using `nm` and `readelf`.
+
 ### Day 3 Result
 
 The static-library build system is implemented on the `static-build` branch. The branch produces both the required static archive and the statically linked client executable.
