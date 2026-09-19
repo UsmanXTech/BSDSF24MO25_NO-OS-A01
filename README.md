@@ -33,7 +33,7 @@ BSDSF24MO25_NO-OS-A01/
 | --- | --- |
 | Project Scaffolding & Version Control | Complete |
 | Multi-file Project | Complete |
-| Static Library | Pending |
+| Static Library | Complete |
 | Dynamic Library | Pending |
 | Man Pages & Installation | Pending |
 | Final Submission | Pending |
@@ -46,9 +46,14 @@ Run:
 make
 ```
 
-The multi-file build produces `bin/client`.
+On the `static-build` branch, the build creates:
 
-To remove generated object files and the executable:
+```text
+lib/libmyutils.a
+bin/client_static
+```
+
+To remove generated object files, the static library, and the static executable:
 
 ```bash
 make clean
@@ -68,4 +73,26 @@ The file utilities follow the assignment interfaces:
 - `wordCount(FILE *file, int *lines, int *words, int *chars)`
 - `mygrep(FILE *fp, const char *search_str, char ***matches)`
 
-`wordCount()` reports lines, words, and characters. `mygrep()` returns matching lines through the dynamically allocated `matches` array.
+## Static Library
+
+The static build packages the utility object files into:
+
+```text
+lib/libmyutils.a
+```
+
+The client program links against the library to produce:
+
+```text
+bin/client_static
+```
+
+Useful inspection commands are:
+
+```bash
+ar -t lib/libmyutils.a
+nm lib/libmyutils.a
+readelf -Ws bin/client_static
+```
+
+These commands can be used to inspect archive members and symbols in the static library and executable.

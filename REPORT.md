@@ -77,25 +77,55 @@ int mygrep(FILE *fp, const char *search_str, char ***matches);
 
 ### Build System
 
-A top-level `Makefile` recursively invokes the Makefile in `src/`. The source Makefile compiles the individual source files into object files under `obj/` and links them into:
+A top-level `Makefile` recursively invokes the Makefile in `src/`. The source Makefile compiles the individual source files into object files under `obj/`.
+
+## Part 3 — Static Library
+
+### Static Library Build
+
+The utility object files are packaged into:
 
 ```text
-bin/client
+lib/libmyutils.a
 ```
 
-The build uses GCC with warnings enabled and the `include/` directory supplied as a header search path.
+The archive contains:
+
+- `mystrfunctions.o`
+- `myfilefunctions.o`
+
+The client object file is linked with the static library to produce:
+
+```text
+bin/client_static
+```
+
+The static link uses the library search path and library name:
+
+```text
+-L../lib -lmyutils
+```
 
 ### Build Commands
 
 ```bash
-make
 make clean
+make
+./bin/client_static
 ```
 
-### Day 2 Correction
+### Static Library Analysis
 
-The multi-file interfaces and implementations were aligned with the assignment specification before proceeding to the static-library stage.
+The following commands are used to inspect the generated library and executable:
 
-### Day 2 Result
+```bash
+ar -t lib/libmyutils.a
+nm lib/libmyutils.a
+readelf -Ws bin/client_static
+```
 
-The multi-file project structure, assignment-compatible interfaces, implementation, and build system are complete on the `multifile-build` branch. The next stage is the static library build.
+`ar -t` lists the object files stored in the archive. `nm` displays symbols from the static library. `readelf -Ws` displays the symbol table of the final executable.
+
+### Day 3 Result
+
+The static-library build system is implemented on the `static-build` branch. The branch produces both the required static archive and the statically linked client executable.
