@@ -1,11 +1,9 @@
 #ifndef MYSTRFUNCTIONS_H
 #define MYSTRFUNCTIONS_H
 
-#include <stddef.h>
-
-size_t mystrlen(const char *str);
-char *mystrcpy(char *dest, const char *src);
-char *mystrncpy(char *dest, const char *src, size_t n);
-char *mystrcat(char *dest, const char *src);
+int mystrlen(const char *s);
+int mystrcpy(char *dest, const char *src);
+int mystrncpy(char *dest, const char *src, int n);
+int mystrcat(char *dest, const char *src);
 
 #endif
