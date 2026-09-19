@@ -53,3 +53,19 @@ To remove generated object files and the executable:
 ```bash
 make clean
 ```
+
+## Multi-file Interfaces
+
+The string utilities follow the assignment interfaces:
+
+- `mystrlen()`
+- `mystrcpy()`
+- `mystrncpy()`
+- `mystrcat()`
+
+The file utilities follow the assignment interfaces:
+
+- `wordCount(FILE *file, int *lines, int *words, int *chars)`
+- `mygrep(FILE *fp, const char *search_str, char ***matches)`
+
+`wordCount()` reports lines, words, and characters. `mygrep()` returns matching lines through the dynamically allocated `matches` array.
