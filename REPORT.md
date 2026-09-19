@@ -51,19 +51,29 @@ The interfaces are separated into:
 
 ### String Utilities
 
-The string module implements:
+The string module implements the assignment interfaces:
 
-- `mystrlen()`
-- `mystrcpy()`
-- `mystrncpy()`
-- `mystrcat()`
+```c
+int mystrlen(const char *s);
+int mystrcpy(char *dest, const char *src);
+int mystrncpy(char *dest, const char *src, int n);
+int mystrcat(char *dest, const char *src);
+```
+
+`mystrlen()` returns the string length and the other string operations return `0` on success and `-1` on invalid input.
 
 ### File Utilities
 
 The file module implements:
 
-- `wordCount()`
-- `mygrep()`
+```c
+int wordCount(FILE *file, int *lines, int *words, int *chars);
+int mygrep(FILE *fp, const char *search_str, char ***matches);
+```
+
+`wordCount()` counts lines, words, and characters from the supplied stream and returns `0` on success or `-1` on failure.
+
+`mygrep()` searches the supplied stream for lines containing the requested string. Matching lines are copied into the dynamically allocated `matches` array. The function returns the number of matches or `-1` on failure.
 
 ### Build System
 
@@ -82,6 +92,10 @@ make
 make clean
 ```
 
+### Day 2 Correction
+
+The multi-file interfaces and implementations were aligned with the assignment specification before proceeding to the static-library stage.
+
 ### Day 2 Result
 
-The multi-file project structure and build system have been added on the `multifile-build` branch. The next stage is the static library build.
+The multi-file project structure, assignment-compatible interfaces, implementation, and build system are complete on the `multifile-build` branch. The next stage is the static library build.
