@@ -1,37 +1,40 @@
 #include "mystrfunctions.h"
 
-size_t mystrlen(const char *str)
+int mystrlen(const char *s)
 {
-    size_t length = 0;
+    int length = 0;
 
-    if (str == NULL)
-        return 0;
+    if (s == 0)
+        return -1;
 
-    while (str[length] != '\0')
+    while (s[length] != '\0')
         length++;
 
     return length;
 }
 
-char *mystrcpy(char *dest, const char *src)
+int mystrcpy(char *dest, const char *src)
 {
-    char *start = dest;
+    int i = 0;
 
-    if (dest == NULL || src == NULL)
-        return dest;
+    if (dest == 0 || src == 0)
+        return -1;
 
-    while ((*dest++ = *src++) != '\0')
-        ;
+    while (src[i] != '\0') {
+        dest[i] = src[i];
+        i++;
+    }
 
-    return start;
+    dest[i] = '\0';
+    return 0;
 }
 
-char *mystrncpy(char *dest, const char *src, size_t n)
+int mystrncpy(char *dest, const char *src, int n)
 {
-    size_t i;
+    int i;
 
-    if (dest == NULL || src == NULL)
-        return dest;
+    if (dest == 0 || src == 0 || n < 0)
+        return -1;
 
     for (i = 0; i < n && src[i] != '\0'; i++)
         dest[i] = src[i];
@@ -39,21 +42,24 @@ char *mystrncpy(char *dest, const char *src, size_t n)
     for (; i < n; i++)
         dest[i] = '\0';
 
-    return dest;
+    return 0;
 }
 
-char *mystrcat(char *dest, const char *src)
+int mystrcat(char *dest, const char *src)
 {
-    char *start = dest;
+    int i = 0;
+    int j = 0;
 
-    if (dest == NULL || src == NULL)
-        return dest;
+    if (dest == 0 || src == 0)
+        return -1;
 
-    while (*dest != '\0')
-        dest++;
+    while (dest[i] != '\0')
+        i++;
 
-    while ((*dest++ = *src++) != '\0')
-        ;
+    while (src[j] != '\0') {
+        dest[i++] = src[j++];
+    }
 
-    return start;
+    dest[i] = '\0';
+    return 0;
 }
