@@ -1,7 +1,9 @@
 #ifndef MYFILEFUNCTIONS_H
 #define MYFILEFUNCTIONS_H
 
-int wordCount(const char *filename);
-int mygrep(const char *filename, const char *pattern);
+#include <stdio.h>
+
+int wordCount(FILE *file, int *lines, int *words, int *chars);
+int mygrep(FILE *fp, const char *search_str, char ***matches);
 
 #endif
