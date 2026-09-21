@@ -106,65 +106,58 @@ The static link uses the library search path and library name:
 -L../lib -lmyutils
 ```
 
-### Build Commands
-
-```bash
-make clean
-make
-./bin/client_static
-```
-
 ### Static Library Analysis
 
-The following commands are used to inspect the generated library and executable:
+The following commands were used to inspect the generated library and executable:
 
 ```bash
 ar -t lib/libmyutils.a
 nm lib/libmyutils.a
+nm bin/client_static
 readelf -Ws bin/client_static
 ```
 
-`ar -t` lists the object files stored in the archive. `nm` displays symbols from the static library. `readelf -Ws` displays the symbol table of the final executable.
+`ar -t` listed the object files stored in the archive. `nm` and `readelf -Ws` confirmed the required utility symbols in the library and final executable.
 
-### Report Questions
+### Feature-3 Report Questions
 
 #### 1. Compare the Makefile from Part 2 and Part 3. What are the key differences in the variables and rules that enable the creation of a static library?
 
 In Part 2, the Makefile compiled the source files into object files and linked all object files directly to create `bin/client`.
 
-In Part 3, the Makefile introduces a library directory and separate library targets:
+In Part 3, the Makefile introduced a library directory and separate library targets:
 
 - `LIBDIR = ../lib`
 - `LIB_OBJS = $(OBJDIR)/mystrfunctions.o $(OBJDIR)/myfilefunctions.o`
 - `LIBRARY = $(LIBDIR)/libmyutils.a`
 - `TARGET = $(BINDIR)/client_static`
 
-A new library rule uses `ar rcs` to create `lib/libmyutils.a` from the utility object files, followed by `ranlib` to create or update the archive index. The client target then links `main.o` against the library using `-L$(LIBDIR) -lmyutils`. This separates the utility functions into a reusable static library instead of linking their object files directly into the client command.
+A library rule uses `ar rcs` to create `lib/libmyutils.a` from the utility object files, followed by `ranlib` to create or update the archive index. The client target then links `main.o` against the library using `-L$(LIBDIR) -lmyutils`.
 
 #### 2. What is the purpose of the ar command? Why is ranlib often used immediately after it?
 
-The `ar` utility creates and manages archive files. In this project, `ar rcs` creates `lib/libmyutils.a` and stores the utility object files `mystrfunctions.o` and `myfilefunctions.o` inside it.
+The `ar` utility creates and manages archive files. In this project, `ar rcs` creates `lib/libmyutils.a` and stores `mystrfunctions.o` and `myfilefunctions.o` inside it.
 
-`ranlib` generates or updates the archive symbol index. The index allows the linker to locate required symbols in the archive efficiently. Modern versions of `ar rcs` commonly create the index automatically, but running `ranlib` explicitly is still useful for clarity and compatibility with traditional static-library workflows.
+`ranlib` generates or updates the archive symbol index, allowing the linker to find symbols in the archive. Modern `ar rcs` commonly creates the index automatically, but `ranlib` was used explicitly in this project.
 
-#### 3. When you run nm on your client_static executable, are the symbols for functions like mystrlen present?
+#### 3. When you run nm on your client_static executable, are the symbols for functions like mystrlen present? What does this tell you about how static linking works?
 
-Yes. The verified `nm bin/client_static` output contains the required utility symbols:
+Yes. The verified `nm bin/client_static` output contained:
 
 ```text
-00000000000016a8 T mystrlen
-00000000000016e6 T mystrcpy
-0000000000001760 T mystrncpy
-00000000000017fb T mystrcat
-000000000000189f T wordCount
-00000000000019ab T mygrep
+T mystrlen
+T mystrcpy
+T mystrncpy
+T mystrcat
+T wordCount
+T mygrep
 ```
 
-The `T` symbol type indicates that these functions are present in the executable's text/code section. The `readelf -Ws bin/client_static` output also confirmed these functions as global function symbols.
+This shows that the required utility functions are present in the final executable. The utility code from the static library was incorporated into the executable during the static-linking process.
 
 ### Day 3 Verification
 
-The static build was compiled successfully with `make` and the resulting `bin/client_static` executed successfully.
+The static build was compiled successfully with `make` and `bin/client_static` executed successfully.
 
 Verified output included:
 
@@ -186,15 +179,74 @@ bin/client_static  17K
 lib/libmyutils.a   5.5K
 ```
 
-The archive inspection showed:
+## Part 4 — Dynamic Library
+
+### Day 4 Objective
+
+The purpose of Feature-4 is to create and use a shared library instead of linking the utility object files statically.
+
+### Dynamic Library
+
+The utility modules are compiled with Position-Independent Code using `-fPIC`, then combined into:
 
 ```text
-mystrfunctions.o
-myfilefunctions.o
+lib/libmyutils.so
 ```
 
-The required utility symbols were also confirmed using `nm` and `readelf`.
+The client is linked against the shared library to produce:
 
-### Day 3 Result
+```text
+bin/client_dynamic
+```
 
-The static-library build system is implemented on the `static-build` branch. The branch produces both the required static archive and the statically linked client executable.
+### Makefile Changes
+
+The dynamic build introduces:
+
+- `PICFLAGS = -fPIC`
+- `LIBRARY = $(LIBDIR)/libmyutils.so`
+- `TARGET = $(BINDIR)/client_dynamic`
+
+The utility object rules use `$(PICFLAGS)`, and the shared-library rule uses GCC's `-shared` option.
+
+### Position-Independent Code
+
+Position-Independent Code is code that can execute correctly regardless of the memory address at which it is loaded. The `-fPIC` compiler option is used when preparing the utility object files for the shared library.
+
+For a shared library, this allows the operating system's loader to map the library at an appropriate address without requiring the compiled library code to depend on one fixed address.
+
+### Dynamic Runtime Loading
+
+The dynamic executable depends on `libmyutils.so` at runtime. The library must be discoverable by the system's dynamic loader.
+
+For a local project build, the library directory can be added temporarily with:
+
+```bash
+export LD_LIBRARY_PATH="$PWD/lib:$LD_LIBRARY_PATH"
+```
+
+Then:
+
+```bash
+./bin/client_dynamic
+```
+
+The `LD_LIBRARY_PATH` variable provides additional directories for the dynamic loader to search for shared libraries. It was necessary for the local custom `.so` file because the project library directory is not automatically one of the loader's standard search locations.
+
+### Dynamic Library Analysis
+
+The runtime dependency can be inspected using:
+
+```bash
+ldd bin/client_dynamic
+```
+
+This shows the shared-library dependencies of the executable and can be used to verify that `libmyutils.so` is being resolved from the project's library directory when the environment is configured.
+
+### Feature-4 Verification
+
+The dynamic build produces the required shared library and dynamic executable. The final size comparison, runtime output, and `ldd` result will be recorded after the build is executed locally.
+
+### Day 4 Result
+
+The dynamic-library build system is implemented on the `dynamic-build` branch. The next verification step is to build locally, compare `client_static` and `client_dynamic`, demonstrate the runtime library lookup behavior, and inspect the dependency with `ldd`.
