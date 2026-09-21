@@ -34,7 +34,7 @@ BSDSF24MO25_NO-OS-A01/
 | Project Scaffolding & Version Control | Complete |
 | Multi-file Project | Complete |
 | Static Library | Complete |
-| Dynamic Library | Pending |
+| Dynamic Library | In Progress |
 | Man Pages & Installation | Pending |
 | Final Submission | Pending |
 
@@ -46,14 +46,14 @@ Run:
 make
 ```
 
-On the `static-build` branch, the build creates:
+On the `dynamic-build` branch, the build creates:
 
 ```text
-lib/libmyutils.a
-bin/client_static
+lib/libmyutils.so
+bin/client_dynamic
 ```
 
-To remove generated object files, the static library, and the static executable:
+To remove generated object files, the shared library, and the dynamic executable:
 
 ```bash
 make clean
@@ -87,12 +87,29 @@ The client program links against the library to produce:
 bin/client_static
 ```
 
-Useful inspection commands are:
+## Dynamic Library
 
-```bash
-ar -t lib/libmyutils.a
-nm lib/libmyutils.a
-readelf -Ws bin/client_static
+The dynamic build compiles the utility modules with Position-Independent Code and creates:
+
+```text
+lib/libmyutils.so
 ```
 
-These commands can be used to inspect archive members and symbols in the static library and executable.
+The client links against the shared library to produce:
+
+```text
+bin/client_dynamic
+```
+
+At runtime, the dynamic loader must be able to locate `libmyutils.so`. For a local project build, this can be demonstrated with:
+
+```bash
+export LD_LIBRARY_PATH="$PWD/lib:$LD_LIBRARY_PATH"
+./bin/client_dynamic
+```
+
+The dependency can be inspected with:
+
+```bash
+ldd bin/client_dynamic
+```
