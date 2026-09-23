@@ -1,0 +1,24 @@
+.TH WORDCOUNT 3
+.SH NAME
+wordCount \- count lines, words, and characters in a file stream
+.SH SYNOPSIS
+.B #include "myfilefunctions.h"
+.br
+.B int wordCount(FILE *file, int *lines, int *words, int *chars);
+.SH DESCRIPTION
+.B wordCount
+reads the supplied file stream and counts newline characters, words, and
+characters.
+The resulting counts are written to the integer locations supplied by the
+.I lines,
+.I words,
+and
+.I chars
+parameters.
+.PP
+The function returns -1 when an input pointer is NULL or when a file read
+error occurs.
+.SH RETURN VALUE
+Returns 0 on success, or -1 on failure.
+.SH AUTHOR
+Usman Hassan <usmaanhassan@outlook.com>
