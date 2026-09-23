@@ -326,10 +326,13 @@ man -l man/man3/mystrlen.1
 
 ### Makefile Install Target
 
-The top-level Makefile now provides an `install` target. It installs:
+The top-level Makefile provides an `install` target. It builds the project first and installs:
 
 - `bin/client_dynamic` as `client` under `/usr/local/bin`
-- all project function man pages under `/usr/local/share/man/man3`
+- `lib/libmyutils.so` under `/usr/local/lib`
+- the project man pages under `/usr/local/share/man/man3` using section-3 filenames
+
+The installation target also runs `ldconfig` to update the shared-library cache and `mandb` to refresh the manual-page database when installing directly to the system.
 
 The installation command is:
 
@@ -337,13 +340,40 @@ The installation command is:
 sudo make install
 ```
 
-After installation, the assignment's required tests are:
+After installation, the intended result is that a new user can run:
 
 ```bash
 client
 man mystrlen
 ```
 
+from any directory without manually setting `LD_LIBRARY_PATH` or running `mandb`.
+
+### Installation Issue Found and Corrected
+
+The first installation attempt exposed two integration issues. The installed `client` could not locate `libmyutils.so`, and the man database rejected the installed `.1` files as bogus filenames inside `man3`.
+
+The Makefile was corrected so that installation now also installs the shared library into `/usr/local/lib`, refreshes the dynamic linker cache with `ldconfig`, and installs the repository's `.1` source man pages as `.3` files in the `man3` directory. This keeps the assignment source files unchanged while using the standard installed filename convention required by the man database.
+
+### Verified Failure That Led to the Fix
+
+The first installation produced:
+
+```text
+client: error while loading shared libraries: libmyutils.so: cannot open shared object file: No such file or directory
+No manual entry for mystrlen
+```
+
+`ldd /usr/local/bin/client` confirmed:
+
+```text
+libmyutils.so => not found
+```
+
+The installed source man page existed at `/usr/local/share/man/man3/mystrlen.1`, but `mandb` reported it as a bogus filename because the `man3` directory expects a section-3 filename.
+
+The corrected installation logic addresses both issues for a new installation.
+
 ### Day 5 Result
 
-The `man-pages` branch contains the required man pages and Makefile installation target. Local installation testing remains to be performed before the final merge and `v0.4.1-final` release.
+Feature-5 now contains the required man pages and an installation target that also handles the runtime shared-library dependency and system man-page database integration. Final local reinstallation and verification are the remaining validation steps before the final release.
