@@ -15,6 +15,8 @@ BSDSF24MO25_NO-OS-A01/
 ├── lib/        # Compiled static and dynamic libraries
 ├── bin/        # Final executable programs
 ├── obj/        # Intermediate object files
+├── man/        # Linux manual pages
+│   └── man3/   # Function manual pages
 ├── Makefile    # Top-level build entry point
 └── REPORT.md   # Assignment report
 ```
@@ -34,8 +36,8 @@ BSDSF24MO25_NO-OS-A01/
 | Project Scaffolding & Version Control | Complete |
 | Multi-file Project | Complete |
 | Static Library | Complete |
-| Dynamic Library | In Progress |
-| Man Pages & Installation | Pending |
+| Dynamic Library | Complete |
+| Man Pages & Installation | In Progress |
 | Final Submission | Pending |
 
 ## Building
@@ -46,7 +48,7 @@ Run:
 make
 ```
 
-On the `dynamic-build` branch, the build creates:
+On the `dynamic-build` and `man-pages` stages, the build creates:
 
 ```text
 lib/libmyutils.so
@@ -112,4 +114,47 @@ The dependency can be inspected with:
 
 ```bash
 ldd bin/client_dynamic
+```
+
+## Man Pages
+
+The `man-pages` branch provides manual pages for all six project functions:
+
+```text
+man/man3/mystrlen.1
+man/man3/mystrcpy.1
+man/man3/mystrncpy.1
+man/man3/mystrcat.1
+man/man3/wordCount.1
+man/man3/mygrep.1
+```
+
+Each page contains the required `.TH`, `.SH NAME`, `.SH SYNOPSIS`, `.SH DESCRIPTION`, and `.SH AUTHOR` sections.
+
+Preview a page locally with:
+
+```bash
+man -l man/man3/mystrlen.1
+```
+
+## Installation
+
+The top-level Makefile provides an `install` target that installs the dynamic client as `client` and copies the function man pages into the system manual-page directory.
+
+Run:
+
+```bash
+sudo make install
+```
+
+Then the installed program can be invoked with:
+
+```bash
+client
+```
+
+and an installed function manual page can be viewed with:
+
+```bash
+man mystrlen
 ```
