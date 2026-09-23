@@ -1,0 +1,23 @@
+.TH MYGREP 3
+.SH NAME
+mygrep \- find lines containing a search string
+.SH SYNOPSIS
+.B #include "myfilefunctions.h"
+.br
+.B int mygrep(FILE *fp, const char *search_str, char ***matches);
+.SH DESCRIPTION
+.B mygrep
+reads lines from the file stream
+.I fp
+and finds lines containing
+.I search_str.
+Matching lines are copied into a dynamically allocated array returned through
+.I matches.
+.PP
+The returned array contains one string for each matching line. The caller is
+responsible for releasing the allocated strings and the array.
+If an input pointer is NULL or a file read error occurs, the function returns -1.
+.SH RETURN VALUE
+Returns the number of matching lines, or -1 on failure.
+.SH AUTHOR
+Usman Hassan <usmaanhassan@outlook.com>
