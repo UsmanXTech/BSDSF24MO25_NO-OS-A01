@@ -37,7 +37,7 @@ BSDSF24MO25_NO-OS-A01/
 | Multi-file Project | Complete |
 | Static Library | Complete |
 | Dynamic Library | Complete |
-| Man Pages & Installation | In Progress |
+| Man Pages & Installation | Complete |
 | Final Submission | Pending |
 
 ## Building
@@ -48,7 +48,7 @@ Run:
 make
 ```
 
-On the `dynamic-build` and `man-pages` stages, the build creates:
+The dynamic build creates:
 
 ```text
 lib/libmyutils.so
@@ -103,7 +103,7 @@ The client links against the shared library to produce:
 bin/client_dynamic
 ```
 
-At runtime, the dynamic loader must be able to locate `libmyutils.so`. For a local project build, this can be demonstrated with:
+For a local project build, the library can be located with:
 
 ```bash
 export LD_LIBRARY_PATH="$PWD/lib:$LD_LIBRARY_PATH"
@@ -118,7 +118,7 @@ ldd bin/client_dynamic
 
 ## Man Pages
 
-The `man-pages` branch provides manual pages for all six project functions:
+The project provides manual pages for all six project functions:
 
 ```text
 man/man3/mystrlen.1
@@ -129,9 +129,9 @@ man/man3/wordCount.1
 man/man3/mygrep.1
 ```
 
-Each page contains the required `.TH`, `.SH NAME`, `.SH SYNOPSIS`, `.SH DESCRIPTION`, and `.SH AUTHOR` sections.
+Each source page contains the required `.TH`, `.SH NAME`, `.SH SYNOPSIS`, `.SH DESCRIPTION`, and `.SH AUTHOR` sections.
 
-Preview a page locally with:
+Preview a source page locally with:
 
 ```bash
 man -l man/man3/mystrlen.1
@@ -139,7 +139,7 @@ man -l man/man3/mystrlen.1
 
 ## Installation
 
-The top-level Makefile provides an `install` target that installs the dynamic client as `client` and copies the function man pages into the system manual-page directory.
+The top-level Makefile provides an `install` target designed for a clean installation on a new Linux system. It automatically builds the project, installs the dynamic client, installs `libmyutils.so` into `/usr/local/lib`, installs the function man pages using the correct section-3 filenames, refreshes the shared-library cache with `ldconfig`, and refreshes the man database with `mandb`.
 
 Run:
 
@@ -147,14 +147,21 @@ Run:
 sudo make install
 ```
 
-Then the installed program can be invoked with:
+After installation, no `LD_LIBRARY_PATH` setting is required. The installed program can be invoked from any directory:
 
 ```bash
 client
 ```
 
-and an installed function manual page can be viewed with:
+The installed function manual pages can be viewed with:
 
 ```bash
 man mystrlen
+man mystrcpy
+man mystrncpy
+man mystrcat
+man wordCount
+man mygrep
 ```
+
+The repository keeps the assignment source filenames as `.1`, while the installation target places them in the `man3` directory as `.3`, which is the filename convention expected by the system manual-page database.
