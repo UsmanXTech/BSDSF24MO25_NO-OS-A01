@@ -1,0 +1,20 @@
+.TH MYSTRLEN 3
+.SH NAME
+mystrlen \- calculate the length of a string
+.SH SYNOPSIS
+.B #include "mystrfunctions.h"
+.br
+.B int mystrlen(const char *s);
+.SH DESCRIPTION
+.B mystrlen
+calculates the number of characters in the string pointed to by
+.I s
+before the terminating null character.
+.PP
+If
+.I s
+is NULL, the function returns -1.
+.SH RETURN VALUE
+Returns the string length on success, or -1 when the input pointer is NULL.
+.SH AUTHOR
+Usman Hassan <usmaanhassan@outlook.com>

@@ -1,0 +1,30 @@
+.TH MYSTRNCPY 3
+.SH NAME
+mystrncpy \- copy up to n characters from a string
+.SH SYNOPSIS
+.B #include "mystrfunctions.h"
+.br
+.B int mystrncpy(char *dest, const char *src, int n);
+.SH DESCRIPTION
+.B mystrncpy
+copies up to
+.I n
+characters from
+.I src
+to
+.I dest.
+If the source string is shorter than
+.I n,
+the remaining destination positions are filled with null characters.
+.PP
+If
+.I dest
+or
+.I src
+is NULL, or
+.I n
+is negative, the function returns -1.
+.SH RETURN VALUE
+Returns 0 on success, or -1 for invalid input.
+.SH AUTHOR
+Usman Hassan <usmaanhassan@outlook.com>

@@ -245,8 +245,105 @@ This shows the shared-library dependencies of the executable and can be used to 
 
 ### Feature-4 Verification
 
-The dynamic build produces the required shared library and dynamic executable. The final size comparison, runtime output, and `ldd` result will be recorded after the build is executed locally.
+The dynamic build was compiled successfully with `make`. The verified file sizes were:
 
-### Day 4 Result
+```text
+bin/client_dynamic   17K
+bin/client_static    17K
+lib/libmyutils.so    16K
+```
 
-The dynamic-library build system is implemented on the `dynamic-build` branch. The next verification step is to build locally, compare `client_static` and `client_dynamic`, demonstrate the runtime library lookup behavior, and inspect the dependency with `ldd`.
+The first execution of `./bin/client_dynamic` produced the expected shared-library lookup error because the project's `lib` directory was not in the loader search path:
+
+```text
+error while loading shared libraries: libmyutils.so: cannot open shared object file: No such file or directory
+```
+
+After setting:
+
+```bash
+export LD_LIBRARY_PATH="$PWD/lib:$LD_LIBRARY_PATH"
+```
+
+the dynamic executable ran successfully and produced:
+
+```text
+String: Day 2: Operating Systems
+Length: 24
+Copied: Multi-file C
+Lines: 3
+Words: 9
+Characters: 65
+Matches: 1
+Static library comes next
+```
+
+The dependency check with `ldd bin/client_dynamic` resolved:
+
+```text
+libmyutils.so => /home/uzzyhassan/BSDSF24MO25_NO-OS-A01/lib/libmyutils.so
+```
+
+These results demonstrate that the dynamic client loads the shared library at runtime after the library search path is configured.
+
+## Part 5 — Man Pages and Installation
+
+### Man Page Structure
+
+The project now contains the required manual-page directory structure:
+
+```text
+man/
+└── man3/
+```
+
+Manual pages were created for all six project functions:
+
+```text
+mystrlen.1
+mystrcpy.1
+mystrncpy.1
+mystrcat.1
+wordCount.1
+mygrep.1
+```
+
+Each man page uses groff formatting and contains the required sections:
+
+- `.TH`
+- `.SH NAME`
+- `.SH SYNOPSIS`
+- `.SH DESCRIPTION`
+- `.SH AUTHOR`
+
+### Man Page Preview
+
+A page can be previewed from the project root with:
+
+```bash
+man -l man/man3/mystrlen.1
+```
+
+### Makefile Install Target
+
+The top-level Makefile now provides an `install` target. It installs:
+
+- `bin/client_dynamic` as `client` under `/usr/local/bin`
+- all project function man pages under `/usr/local/share/man/man3`
+
+The installation command is:
+
+```bash
+sudo make install
+```
+
+After installation, the assignment's required tests are:
+
+```bash
+client
+man mystrlen
+```
+
+### Day 5 Result
+
+The `man-pages` branch contains the required man pages and Makefile installation target. Local installation testing remains to be performed before the final merge and `v0.4.1-final` release.
