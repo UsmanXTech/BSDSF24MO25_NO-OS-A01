@@ -1,0 +1,21 @@
+.TH MYSTRCAT 3
+.SH NAME
+mystrcat \- append one string to another
+.SH SYNOPSIS
+.B #include "mystrfunctions.h"
+.br
+.B int mystrcat(char *dest, const char *src);
+.SH DESCRIPTION
+.B mystrcat
+appends the string pointed to by
+.I src
+to the end of the string pointed to by
+.I dest
+and writes the terminating null character.
+.PP
+The destination buffer must have enough space for the resulting string.
+If either pointer is NULL, the function returns -1.
+.SH RETURN VALUE
+Returns 0 on success, or -1 when an input pointer is NULL.
+.SH AUTHOR
+Usman Hassan <usmaanhassan@outlook.com>
